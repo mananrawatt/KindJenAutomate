@@ -67,7 +67,7 @@ pipeline {
 
         stage('Apply to KIND Cluster') {
             steps {
-                sh 'kubectl apply -f rendered_yamls/deployment.yaml'
+                sh '/usr/local/bin/kubectl apply -f rendered_yamls/deployment.yaml'
                 sh 'kubectl apply -f rendered_yamls/service.yaml'
                 sh 'kubectl apply -f rendered_yamls/virtualservice.yaml || true'
             }
