@@ -22,4 +22,4 @@ if __name__ == "__main__":
     os.makedirs("rendered_yamls", exist_ok=True)
     variables = load_env("params.env")
     render_template("deployment_template.yaml", variables, "rendered_yamls/deployment.yaml")
-    render_template("service_template.yaml", variables, "rendered_yamls/service.yaml")
+    # render_template("service_template.yaml", variables, "rendered_yamls/service.yaml")
