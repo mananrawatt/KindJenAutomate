@@ -13,6 +13,41 @@ pipeline {
     }
 
     stages {
+        stage('Check Environment & Dependencies') {
+            steps {
+                echo "🔍 Checking environment setup..."
+                sh '''
+                    echo "Python version:"
+                    python3 --version
+
+                    echo "Pip version:"
+                    pip3 --version
+
+                    echo "Checking jinja2 installation..."
+                    python3 -c "import jinja2; print('jinja2 version:', jinja2.__version__)" || echo "jinja2 not installed!"
+
+                    echo "kubectl version:"
+                    kubectl version --client --short || echo "kubectl not available!"
+                '''
+            }
+        }
+
+        stage('Install Missing Dependencies (optional)') {
+            steps {
+                sh '''
+                    python3 -m venv venv
+                    source venv/bin/activate
+                    pip install jinja2
+                '''
+            }
+        }
+
+        stage('Checkout Code') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Generate YAML Files') {
             steps {
                 script {
@@ -22,8 +57,10 @@ pipeline {
                     port=${params.PORT}
                     replicas=${params.REPLICAS}
                     """
-
-                    sh "python3 ${env.SCRIPT_DIR}/generate_yaml.py"
+                    sh '''
+                        source venv/bin/activate
+                        python3 ${SCRIPT_DIR}/generate_yaml.py
+                    '''
                 }
             }
         }
